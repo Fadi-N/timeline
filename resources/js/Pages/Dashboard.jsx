@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {Head} from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
+import {Inertia} from '@inertiajs/inertia';
 import {Button} from "@nextui-org/button";
 import {BsFolderPlus} from "react-icons/bs";
 import {Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
@@ -27,6 +27,11 @@ export default function Dashboard({auth, folders}) {
         })
     }
 
+    const goToNotes = (folderId) => {
+        Inertia.get(`/folder/notes?id=${folderId}`);
+    }
+
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard"/>
@@ -37,10 +42,11 @@ export default function Dashboard({auth, folders}) {
                         Folders
                     </div>
                     <Button
+                        className="mx-4"
                         variant="light"
                         startContent={<BsFolderPlus/>}
                         size={"sm"}
-                        onPress={onOpen}
+                        onClick={onOpen}
                     >
                         New Folder
                     </Button>
@@ -55,11 +61,11 @@ export default function Dashboard({auth, folders}) {
                                     <p className="text-[1.25rem] text-gray-800">{folder.name}</p>
                                     <p className="text-gray-400">Last modification: </p>
                                 </div>
-                                <div className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12">
-                                    <FaAngleRight
-                                        className="text-white w-4 h-4"
-
-                                    />
+                                <div
+                                    className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer"
+                                    onClick={() => goToNotes(folder.id)}
+                                >
+                                    <FaAngleRight className="text-white w-4 h-4"/>
                                 </div>
                             </li>
                         ))}

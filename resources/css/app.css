@@ -4,6 +4,7 @@
 
 [type='text'] {
     border: none;
+
     &:focus {
         padding: 0;
         border: none;
@@ -11,3 +12,33 @@
     }
 }
 
+.hidden-radio, .hidden-radio-2 {
+
+    label {
+        > span {
+            visibility: hidden;
+            display: none;
+        }
+
+        > div {
+            margin: 0;
+        }
+    }
+
+    .chip-custom{
+        width: 1.375rem;
+        height: 1.375rem;
+
+        > span{
+            padding: 0;
+            width: 1.375rem;
+            height: 1.375rem;
+        }
+    }
+}
+
+.hidden-radio-2 {
+    div, span{
+        padding: 0;
+    }
+}

@@ -27,7 +27,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/folder', function () {
+Route::get('/folders', function () {
     $folders = \App\Models\Folder::all();
 
     return Inertia::render('Dashboard', [
@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
+    Route::get('/folder/notes', [FolderController::class, 'showNotesById'])->middleware(['auth', 'verified'])->name('folders.notes');
+
 });
 
 require __DIR__.'/auth.php';
