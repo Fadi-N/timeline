@@ -25,8 +25,8 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('home')} active={route().current('home')}>
                                     Home
                                 </NavLink>
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
+                                <NavLink href={route('folder')} active={route().current('folder')}>
+                                    Folders
                                 </NavLink>
                             </div>
                         </div>
@@ -87,7 +87,7 @@ export default function Authenticated({ user, header, children }) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                        <ResponsiveNavLink href={route('folder')} active={route().current('folder')}>
                             Dashboard
                         </ResponsiveNavLink>
                     </div>

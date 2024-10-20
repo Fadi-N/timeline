@@ -27,13 +27,13 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/dashboard', function () {
+Route::get('/folder', function () {
     $folders = \App\Models\Folder::all();
 
     return Inertia::render('Dashboard', [
         'folders' => $folders
     ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('folder');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -31,6 +31,6 @@ class FolderController extends Controller
         $folder->save();
 
         // Redirect after creating new folder
-        return redirect()->route('dashboard')->with('success', 'Folder added!');
+        return redirect()->route('folder')->with('success', 'Folder added!');
     }
 }

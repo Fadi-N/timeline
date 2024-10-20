@@ -56,7 +56,10 @@ export default function Dashboard({auth, folders}) {
                                     <p className="text-gray-400">Last modification: </p>
                                 </div>
                                 <div className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12">
-                                    <FaAngleRight className="text-white w-4 h-4"/>
+                                    <FaAngleRight
+                                        className="text-white w-4 h-4"
+
+                                    />
                                 </div>
                             </li>
                         ))}

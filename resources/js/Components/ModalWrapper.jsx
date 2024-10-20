@@ -26,13 +26,15 @@ const ModalWrapper = ({
                         <ModalFooter>
                             <Button
                                 color="danger"
-                                variant="light"
+                                variant="solid"
                                 onClick={onClose}
                             >
                                 Close
                             </Button>
                             <Button
+                                className="bg-gray-800 text-white"
                                 color="default"
+                                variant="solid"
                                 onClick={onSubmit}
                             >
                                 {submitButtonText}
