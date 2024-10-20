@@ -7,6 +7,7 @@ import {Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDi
 import {Input} from "@nextui-org/input";
 import {FaAngleRight} from "react-icons/fa6";
 import {useState} from "react";
+import ModalWrapper from "@/Components/ModalWrapper.jsx";
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -63,42 +64,23 @@ export default function Dashboard({auth, folders}) {
                 </div>
             </div>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader>New Folder</ModalHeader>
-                            <Divider className="mb-4"/>
-                            <ModalBody>
-                                <form onSubmit={handleCreateFolder}>
-                                    <Input
-                                        type="text"
-                                        label="Folder"
-                                        onChange={(e) => setNewFolderName(e.target.value)}
-                                    />
-                                </form>
-                            </ModalBody>
-                            <Divider className="mt-4"/>
-                            <ModalFooter>
-                                <Button
-                                    color="danger"
-                                    variant="light"
-                                    onPress={onClose}
-                                >
-                                    Close
-                                </Button>
-                                <Button
-                                    color="default"
-                                    onPress={onClose}
-                                    onClick={handleCreateFolder}
-                                >
-                                    Create
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
+            <ModalWrapper
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                title="New Folder"
+                submitButtonText="Create Folder"
+                onSubmit={handleCreateFolder}
+            >
+                <form onSubmit={handleCreateFolder}>
+                    <Input
+                        className="custom-input"
+                        type="text"
+                        label="Folder Name"
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                    />
+                </form>
+            </ModalWrapper>
         </AuthenticatedLayout>
     );
 }
