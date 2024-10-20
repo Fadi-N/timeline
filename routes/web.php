@@ -25,10 +25,14 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $folders = \App\Models\Folder::all();
+
+    return Inertia::render('Dashboard', [
+        'folders' => $folders
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -36,9 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('folders', FolderController::class);
-    Route::resource('folders.notes', NoteController::class);
-
+    Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
 });
 
 require __DIR__.'/auth.php';

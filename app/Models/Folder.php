@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +11,7 @@ class Folder extends Model
 
     protected $fillable = ["name"];
 
-    public function tasks(){
-        return $this->hasMany(Task::class);
+    public function notes(){
+        return $this->hasMany(Note::class);
     }
 }
