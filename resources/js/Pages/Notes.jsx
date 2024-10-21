@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {Head} from "@inertiajs/react";
 import {Button} from "@nextui-org/button";
 import {BsFileEarmarkPlus} from "react-icons/bs";
@@ -8,10 +8,10 @@ import {Input} from "@nextui-org/input";
 import ModalWrapper from "@/Components/ModalWrapper.jsx";
 import {getLocalTimeZone, parseZonedDateTime, today} from "@internationalized/date";
 import {Inertia} from "@inertiajs/inertia";
+import {FaRegTrashCan} from "react-icons/fa6";
 
 const Notes = ({auth, folder, notes}) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
     const currentDate = today(getLocalTimeZone("Europe/Warsaw"));
 
     const [title, setTitle] = useState('');
@@ -19,10 +19,9 @@ const Notes = ({auth, folder, notes}) => {
     const [startDate, setStartDate] = useState(currentDate);
     const [endDate, setEndDate] = useState(currentDate.add({days: 7}));
     const [status, setStatus] = useState('pending');
+    const [offsets, setOffsets] = useState({});
+    const [isDragging, setIsDragging] = useState(false);
 
-    const handleStatusChange = (value) => {
-        setStatus(value);
-    };
 
     const handleCreateNote = (e) => {
         e.preventDefault();
@@ -62,6 +61,47 @@ const Notes = ({auth, folder, notes}) => {
         });
     };
 
+    const handleMouseDown = (noteId, e) => {
+        setIsDragging(true);
+        const startX = e.clientX || e.touches[0].clientX;
+
+        const handleMouseMove = (e) => {
+            const currentX = e.clientX || e.touches[0].clientX;
+            const dx = currentX - startX;
+            const newOffset = Math.min(0, Math.max(-100, (offsets[noteId] || 0) + dx));
+            setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: newOffset }));
+        };
+
+        const handleMouseUp = () => {
+            setIsDragging(false);
+            const currentOffset = offsets[noteId];
+
+            if (currentOffset < -20) {
+                handleDeleteNote(noteId);
+                setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: 0 }));
+            } else {
+                setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: currentOffset }));
+            }
+
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+    };
+
+
+    const handleDeleteNote = (noteId) => {
+        Inertia.delete(`/notes/${noteId}`, {
+            onSuccess: () => {
+                console.log('Note deleted successfully');
+            },
+            onError: (error) => {
+                console.error('Error deleting note:', error);
+            }
+        });
+    };
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -88,38 +128,58 @@ const Notes = ({auth, folder, notes}) => {
                 <div className="p-4">
                     <ul className="flex flex-col space-y-3">
                         {notes?.map(note => (
-                            <li key={note.id} className="flex justify-between items-center p-6 lg:p-8 bg-yellow-custom rounded-[1.25rem]">
-                                <div className={`border-s-3 px-6 w-full ${note.status === 'pending' ? 'border-s-blue-500' : note.status === 'in_progress' ? 'border-s-yellow-600' : 'border-s-green-500'}`}>
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[1.25rem] text-gray-800">{note.title}</p>
-                                        <div className="flex items-center justify-between hidden-radio-2">
-                                            <RadioGroup className="flex flex-row items-center justify-between w-full" orientation="horizontal" defaultValue={note.status}>
-                                                <Chip
-                                                    className={`chip-custom hover:bg-blue-500 ${note.status === 'pending' ? 'bg-blue-500' : 'bg-gray-300'}`}
-                                                    onClick={() => handleChipClick(note.id, 'pending')}
-                                                >
-                                                </Chip>
-                                                <Chip
-                                                    className={`chip-custom hover:bg-yellow-600 ${note.status === 'in_progress' ? 'bg-yellow-600' : 'bg-gray-300'}`}
-                                                    onClick={() => handleChipClick(note.id, 'in_progress')}
-                                                >
-                                                </Chip>
-                                                <Chip
-                                                    className={`chip-custom hover:bg-green-500 ${note.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'}`}
-                                                    onClick={() => handleChipClick(note.id, 'completed')}
-                                                >
-                                                </Chip>
-                                            </RadioGroup>
+                            <div className="flex relative">
+                                <li
+                                    key={note.id}
+                                    className={`note-item flex flex-1 relative z-10 justify-between items-center p-6 lg:p-8 bg-yellow-custom ${offsets[note.id] === undefined ? 'rounded-[1.25rem]' : 'rounded-s-[1.25rem] rounded-e-none '}`}
+                                    style={{transform: `translateX(${offsets[note.id]}px)`}}
+                                    onMouseDown={(e) => handleMouseDown(note.id, e)}
+                                >
+                                    <div
+                                        className={`border-s-3 px-6 w-full ${note.status === 'pending' ? 'border-s-blue-500' : note.status === 'in_progress' ? 'border-s-yellow-600' : 'border-s-green-500'}`}>
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-[1.25rem] text-gray-800">{note.title}</p>
+                                            <div className="flex items-center justify-between hidden-radio-2">
+                                                <RadioGroup
+                                                    className="flex flex-row items-center justify-between w-full"
+                                                    orientation="horizontal" defaultValue={note.status}>
+                                                    <Chip
+                                                        className={`chip-custom hover:bg-blue-500 ${note.status === 'pending' ? 'bg-blue-500' : 'bg-gray-300'}`}
+                                                        onClick={() => handleChipClick(note.id, 'pending')}
+                                                    >
+                                                    </Chip>
+                                                    <Chip
+                                                        className={`chip-custom hover:bg-yellow-600 ${note.status === 'in_progress' ? 'bg-yellow-600' : 'bg-gray-300'}`}
+                                                        onClick={() => handleChipClick(note.id, 'in_progress')}
+                                                    >
+                                                    </Chip>
+                                                    <Chip
+                                                        className={`chip-custom hover:bg-green-500 ${note.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'}`}
+                                                        onClick={() => handleChipClick(note.id, 'completed')}
+                                                    >
+                                                    </Chip>
+                                                </RadioGroup>
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-400">{note.description}</p>
+                                        <div
+                                            className="flex justify-end text-[0.875rem] text-gray-400 font-semibold mt-10">
+                                            {note.start_date} - {note.end_date}
                                         </div>
                                     </div>
-                                    <p className="text-gray-400">{note.description}</p>
-                                    <div className="flex justify-end text-[0.875rem] text-gray-400 font-semibold mt-10">
-                                        {note.start_date} - {note.end_date}
-                                    </div>
-                                </div>
-                            </li>
+                                </li>
+                                <Button
+                                    className="delete-button h-[179px] absolute end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                    color="danger"
+                                    onClick={() => handleDeleteNote(note.id)}
+                                    style={{
+                                        width: `${-offsets[note.id]}px`,
+                                    }}
+                                >
+                                    <FaRegTrashCan className="w-4 h-4"/>
+                                </Button>
+                            </div>
                         ))}
-
                     </ul>
                 </div>
             </div>
@@ -172,7 +232,7 @@ const Notes = ({auth, folder, notes}) => {
                                 className={`hover:bg-blue-500 ${status === 'pending' ? 'bg-blue-500' : 'bg-gray-200'}`}>
                                 <Radio
                                     value="pending"
-                                    onChange={() => handleStatusChange('pending')}
+                                    onChange={() => setStatus('pending')}
                                 >
                                     <span className={status === 'pending' ? 'text-white' : 'hover:text-white'}>
                                         Pending
@@ -183,7 +243,7 @@ const Notes = ({auth, folder, notes}) => {
                                 className={`hover:bg-yellow-600 ${status === 'in_progress' ? 'bg-yellow-600' : 'bg-gray-200'}`}>
                                 <Radio
                                     value="in_progress"
-                                    onChange={() => handleStatusChange('in_progress')}
+                                    onChange={() => setStatus('in_progress')}
                                 >
                                     <span className={status === 'in_progress' ? 'text-white' : 'hover:text-white'}>
                                         In Progress
@@ -194,7 +254,7 @@ const Notes = ({auth, folder, notes}) => {
                                 className={`hover:bg-green-500 ${status === 'completed' ? 'bg-green-500' : 'bg-gray-200'}`}>
                                 <Radio
                                     value="completed"
-                                    onChange={() => handleStatusChange('completed')}
+                                    onChange={() => setStatus('completed')}
                                 >
                                     <span className={status === 'completed' ? 'text-white' : 'hover:text-white'}>
                                         Completed

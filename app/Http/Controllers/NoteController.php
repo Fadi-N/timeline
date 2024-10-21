@@ -46,4 +46,13 @@ class NoteController extends Controller
         return redirect()->back()->with('success', 'Note created!');
     }
 
+    public function destroy($id)
+    {
+        $note = Note::findOrFail($id);
+        $note->delete();
+
+        return redirect()->back()->with('success', 'Note deleted successfully!');
+    }
+
+
 }
