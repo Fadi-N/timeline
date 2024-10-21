@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
     Route::get('/folder/notes', [FolderController::class, 'showNotesById'])->middleware(['auth', 'verified'])->name('folders.notes');
 
+    Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::patch('/notes/{id}', [NoteController::class, 'update'])->name('notes.update');
+
 });
 
 require __DIR__.'/auth.php';

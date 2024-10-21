@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('folder_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->enum('status', ['pending', 'in_progress', 'completed']);
             $table->timestamps();
         });
