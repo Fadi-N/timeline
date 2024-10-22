@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import {Head} from "@inertiajs/react";
 import {Button} from "@nextui-org/button";
-import {BsFileEarmarkPlus, BsFilter} from "react-icons/bs";
+import {BsFileEarmarkPlus, BsFilter, BsPencilSquare} from "react-icons/bs";
 import {
     Chip,
     DateRangePicker,
@@ -219,7 +219,7 @@ const Notes = ({auth, folder, notes}) => {
                                 <li
                                     key={note.id}
                                     className={`note-item flex flex-1 relative z-10 justify-between items-center p-6 lg:p-8 bg-yellow-custom ${offsets[note.id] === undefined ? 'rounded-[1.25rem]' : 'rounded-s-[1.25rem] rounded-e-none '}`}
-                                    style={{transform: `translateX(${offsets[note.id]}px)`}}
+                                    style={{transform: `translateX(0px)`}}
                                     onMouseDown={(e) => handleMouseDown(note.id, e)}
                                 >
                                     <div
@@ -255,16 +255,28 @@ const Notes = ({auth, folder, notes}) => {
                                         </div>
                                     </div>
                                 </li>
-                                <Button
-                                    className="delete-button h-[179px] absolute end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
-                                    color="danger"
-                                    onClick={() => handleDeleteNote(note.id)}
-                                    style={{
-                                        width: `${-offsets[note.id]}px`,
-                                    }}
-                                >
-                                    <FaRegTrashCan className="w-4 h-4"/>
-                                </Button>
+                                <div>
+                                    <Button
+                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        color="secondary"
+                                        onClick={() => handleDeleteNote(note.id)}
+                                        style={{
+                                            width: `${-offsets[note.id]}px`,
+                                        }}
+                                    >
+                                        <BsPencilSquare className="w-4 h-4"/>
+                                    </Button>
+                                    <Button
+                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        color="danger"
+                                        onClick={() => handleDeleteNote(note.id)}
+                                        style={{
+                                            width: `${-offsets[note.id]}px`,
+                                        }}
+                                    >
+                                        <FaRegTrashCan className="w-4 h-4"/>
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </ul>
