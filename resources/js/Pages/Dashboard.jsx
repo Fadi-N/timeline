@@ -44,7 +44,7 @@ export default function Dashboard({auth, folders}) {
                     <Button
                         className="mx-4"
                         variant="light"
-                        startContent={<BsFolderPlus/>}
+                        startContent={<BsFolderPlus className="w-4 h-4"/>}
                         size={"sm"}
                         onClick={onOpen}
                     >

@@ -1,8 +1,17 @@
 import React, {useState, useRef} from 'react';
 import {Head} from "@inertiajs/react";
 import {Button} from "@nextui-org/button";
-import {BsFileEarmarkPlus} from "react-icons/bs";
-import {Chip, DateRangePicker, Divider, Radio, RadioGroup, useDisclosure} from "@nextui-org/react";
+import {BsFileEarmarkPlus, BsFilter} from "react-icons/bs";
+import {
+    Chip,
+    DateRangePicker,
+    Divider,
+    Dropdown, DropdownItem, DropdownMenu, DropdownSection,
+    DropdownTrigger,
+    Radio,
+    RadioGroup,
+    useDisclosure
+} from "@nextui-org/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import {Input} from "@nextui-org/input";
 import ModalWrapper from "@/Components/ModalWrapper.jsx";
@@ -22,6 +31,7 @@ const Notes = ({auth, folder, notes}) => {
     const [offsets, setOffsets] = useState({});
     const [isDragging, setIsDragging] = useState(false);
 
+    const [filteredData, setFilteredData] = useState(notes)
 
     const handleCreateNote = (e) => {
         e.preventDefault();
@@ -69,7 +79,7 @@ const Notes = ({auth, folder, notes}) => {
             const currentX = e.clientX || e.touches[0].clientX;
             const dx = currentX - startX;
             const newOffset = Math.min(0, Math.max(-100, (offsets[noteId] || 0) + dx));
-            setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: newOffset }));
+            setOffsets(prevOffsets => ({...prevOffsets, [noteId]: newOffset}));
         };
 
         const handleMouseUp = () => {
@@ -78,9 +88,9 @@ const Notes = ({auth, folder, notes}) => {
 
             if (currentOffset < -20) {
                 handleDeleteNote(noteId);
-                setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: 0 }));
+                setOffsets(prevOffsets => ({...prevOffsets, [noteId]: 0}));
             } else {
-                setOffsets(prevOffsets => ({ ...prevOffsets, [noteId]: currentOffset }));
+                setOffsets(prevOffsets => ({...prevOffsets, [noteId]: currentOffset}));
             }
 
             window.removeEventListener('mousemove', handleMouseMove);
@@ -103,6 +113,19 @@ const Notes = ({auth, folder, notes}) => {
         });
     };
 
+    const handleSelectedStatus = (e) => {
+        const selectedStatus = e.target.value;
+        if (selectedStatus === "All") {
+            setFilteredData(notes);
+        } else {
+            const filtered = notes.filter(note => note.status === selectedStatus.toLowerCase());
+            setFilteredData(filtered);
+        }
+    };
+
+
+    console.log(filteredData)
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard"/>
@@ -114,20 +137,84 @@ const Notes = ({auth, folder, notes}) => {
                             Folder
                         </a> > {folder.name}
                     </div>
-                    <Button
-                        className="mx-4"
-                        variant="light"
-                        startContent={<BsFileEarmarkPlus/>}
-                        size={"sm"}
-                        onClick={onOpen}
-                    >
-                        New Note
-                    </Button>
+                    <div className="flex">
+                        <Button
+                            className="mx-4"
+                            variant="light"
+                            startContent={<BsFileEarmarkPlus className="w-4 h-4"/>}
+                            size={"sm"}
+                            onClick={onOpen}
+                        >
+                            New Note
+                        </Button>
+                        <Divider
+                            className="h-auto"
+                            orientation="vertical"
+                        />
+                        <Dropdown
+                            showArrow
+                            radius="sm"
+                            classNames={{
+                                base: "before:bg-default-200",
+                                content: "p-0 border-small border-divider bg-background",
+                            }}
+                        >
+                            <DropdownTrigger>
+                                <Button
+                                    className="mx-4"
+                                    variant="light"
+                                    startContent={<BsFilter className="w-4 h-4"/>}
+                                    size={"sm"}
+                                >
+                                    Filters
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu
+                                aria-label="Custom item styles"
+                                className="p-3"
+                                itemClasses={{
+                                    base: [
+                                        "rounded-md",
+                                        "text-default-500",
+                                        "transition-opacity",
+                                        "data-[hover=true]:text-foreground",
+                                        "data-[hover=true]:bg-default-100",
+                                        "dark:data-[hover=true]:bg-default-50",
+                                        "data-[selectable=true]:focus:bg-default-50",
+                                        "data-[pressed=true]:opacity-70",
+                                        "data-[focus-visible=true]:ring-default-500",
+                                    ],
+                                }}
+                            >
+                                <DropdownSection aria-label="Preferences">
+                                    <DropdownItem
+                                        isReadOnly
+                                        key="theme"
+                                        className="cursor-default space-x-4"
+                                        endContent={
+                                            <select
+                                                className="z-10 outline-none w-32 py-0.5 rounded-md text-tiny group-data-[hover=true]:border-default-500 border-small border-default-300 dark:border-default-200 bg-transparent text-default-500"
+                                                id="status"
+                                                name="status"
+                                                onChange={handleSelectedStatus}
+                                            >
+                                                {["All", "Pending", "In Progress", "Completed"].map((status) => (
+                                                    <option>{status}</option>
+                                                ))}
+                                            </select>
+                                        }
+                                    >
+                                        Status
+                                    </DropdownItem>
+                                </DropdownSection>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
                 </div>
                 <Divider/>
                 <div className="p-4">
                     <ul className="flex flex-col space-y-3">
-                        {notes?.map(note => (
+                        {filteredData?.map(note => (
                             <div className="flex relative">
                                 <li
                                     key={note.id}
