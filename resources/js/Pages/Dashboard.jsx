@@ -1,73 +1,155 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {Head} from '@inertiajs/react';
-import {Inertia} from '@inertiajs/inertia';
-import {Button} from "@nextui-org/button";
-import {BsFolderPlus} from "react-icons/bs";
-import {Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
-import {Input} from "@nextui-org/input";
-import {FaAngleRight} from "react-icons/fa6";
-import {useState} from "react";
+import { Head } from '@inertiajs/react';
+import { Inertia } from '@inertiajs/inertia';
+import { Button } from "@nextui-org/button";
+import { BsFolderPlus } from "react-icons/bs";
+import { Divider, useDisclosure } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
+import { FaAngleRight, FaRegTrashCan } from "react-icons/fa6";
+import { useState } from "react";
+import { FaPencilAlt } from "react-icons/fa";
 import ModalWrapper from "@/Components/ModalWrapper.jsx";
 
-export default function Dashboard({auth, folders}) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
+export default function Dashboard({ auth, folders }) {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [newFolderName, setNewFolderName] = useState('');
+    const [editFolderId, setEditFolderId] = useState(null);
+    const [offsets, setOffsets] = useState({});
+    const [isDragging, setIsDragging] = useState(false);
+
+    console.log(offsets[folders[0].id])
 
     const handleCreateFolder = (e) => {
         e.preventDefault();
-
-        Inertia.post('/folders', {
-            name: newFolderName
-        }, {
+        Inertia.post('/folders', { name: newFolderName }, {
             onSuccess: () => {
                 onOpenChange(false);
                 setNewFolderName('');
             }
-        })
-    }
+        });
+    };
+
+    const handleEditFolder = (folderId) => {
+        const folderToEdit = folders.find(folder => folder.id === folderId);
+        setNewFolderName(folderToEdit.name);
+        setEditFolderId(folderId);
+        onOpenChange(true);  // Open modal for editing
+    };
 
     const goToNotes = (folderId) => {
         Inertia.get(`/folder/notes?id=${folderId}`);
-    }
+    };
 
+    const handleMouseDown = (folderId, e) => {
+        setIsDragging(true);
+        const startX = e.clientX || e.touches[0].clientX;
+
+        const handleMouseMove = (e) => {
+            const currentX = e.clientX || e.touches[0].clientX;
+            const dx = currentX - startX;
+            const newOffset = Math.min(0, Math.max(-100, (offsets[folderId] || 0) + dx));
+            setOffsets(prevOffsets => ({ ...prevOffsets, [folderId]: newOffset }));
+        };
+
+        const handleMouseUp = () => {
+            setIsDragging(false);
+            const currentOffset = offsets[folderId];
+
+            if (currentOffset < -20) {
+                handleDeleteFolder(folderId);
+                setOffsets(prevOffsets => ({ ...prevOffsets, [folderId]: 0 }));
+            } else {
+                setOffsets(prevOffsets => ({ ...prevOffsets, [folderId]: currentOffset }));
+            }
+
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+    };
+
+    const handleDeleteFolder = (folderId) => {
+        Inertia.delete(`/folders/${folderId}`, {
+            onSuccess: () => {
+                console.log('Folder deleted successfully');
+            },
+            onError: (error) => {
+                console.error('Error deleting folder:', error);
+            }
+        });
+    };
+
+    const handleUpdateFolder = (e) => {
+        e.preventDefault();
+        Inertia.patch(`/folders/${editFolderId}`, { name: newFolderName }, {
+            onSuccess: () => {
+                onOpenChange(false);
+                setNewFolderName('');
+                setEditFolderId(null);
+            }
+        });
+    };
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <Head title="Dashboard"/>
+            <Head title="Dashboard" />
 
             <div className="container mx-auto px-4 bg-white min-h-[calc(100vh-65px)]">
                 <div className="flex items-center justify-between py-4">
-                    <div className="ps-4 text-[1.25rem] lg:text-[1.375rem] text-gray-400">
-                        Folders
-                    </div>
+                    <div className="ps-4 text-[1.25rem] lg:text-[1.375rem] text-gray-400">Folders</div>
                     <Button
                         className="mx-4"
                         variant="light"
-                        startContent={<BsFolderPlus className="w-4 h-4"/>}
+                        startContent={<BsFolderPlus className="w-4 h-4" />}
                         size={"sm"}
                         onClick={onOpen}
                     >
                         New Folder
                     </Button>
                 </div>
-                <Divider/>
+                <Divider />
                 <div className="p-4">
                     <ul className="flex flex-col space-y-3">
                         {folders?.map(folder => (
-                            <li key={folder.id}
-                                className="flex justify-between items-center p-6 lg:p-8 bg-yellow-custom rounded-[1.25rem]">
-                                <div>
-                                    <p className="text-[1.25rem] text-gray-800">{folder.name}</p>
-                                    <p className="text-gray-400">Last modification: </p>
-                                </div>
-                                <div
-                                    className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer"
-                                    onClick={() => goToNotes(folder.id)}
+                            <div className="flex relative" key={folder.id}>
+                                <li
+                                    className={`flex flex-1 relative z-10 justify-between items-center p-6 lg:p-8 bg-yellow-custom ${offsets[folder.id] === undefined ? 'rounded-[1.25rem]' : 'rounded-s-[1.25rem] rounded-e-none'}`}
+                                    style={{ transform: `translateX(0px)` }}
+                                    onMouseDown={(e) => handleMouseDown(folder.id, e)}
                                 >
-                                    <FaAngleRight className="text-white w-4 h-4"/>
+                                    <div>
+                                        <p className="text-[1.25rem] text-gray-800">{folder.name}</p>
+                                        <p className="text-gray-400">Last modification:</p>
+                                    </div>
+                                    <div className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer" onClick={() => goToNotes(folder.id)}>
+                                        <FaAngleRight className="text-white w-4 h-4" />
+                                    </div>
+                                </li>
+                                <div>
+                                    <Button
+                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        color="secondary"
+                                        onClick={() => handleEditFolder(folder.id)}
+                                        style={{
+                                            width: `${-offsets[folder.id]}px`,
+                                        }}
+                                    >
+                                        <FaPencilAlt className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        color="danger"
+                                        onClick={() => handleDeleteFolder(folder.id)}
+                                        style={{
+                                            width: `${-offsets[folder.id]}px`,
+                                        }}
+                                    >
+                                        <FaRegTrashCan className="w-4 h-4" />
+                                    </Button>
                                 </div>
-                            </li>
+                            </div>
                         ))}
                     </ul>
                 </div>
@@ -76,11 +158,11 @@ export default function Dashboard({auth, folders}) {
             <ModalWrapper
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                title="New Folder"
-                submitButtonText="Create Folder"
-                onSubmit={handleCreateFolder}
+                title={editFolderId ? "Edit Folder" : "New Folder"}
+                submitButtonText={editFolderId ? "Update Folder" : "Create Folder"}
+                onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}
             >
-                <form onSubmit={handleCreateFolder}>
+                <form onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}>
                     <Input
                         className="custom-input"
                         type="text"

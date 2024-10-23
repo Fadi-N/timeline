@@ -47,4 +47,12 @@ class FolderController extends Controller
             'notes' => $notes
         ]);
     }
+
+    public function destroy($id)
+    {
+        $folder = Folder::findOrFail($id);
+        $folder->delete();
+
+        return redirect()->back()->with('success', 'Folder deleted successfully!');
+    }
 }

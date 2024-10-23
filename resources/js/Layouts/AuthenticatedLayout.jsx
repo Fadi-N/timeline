@@ -46,7 +46,7 @@ export default function Authenticated({user, header, children}) {
                                                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
                                                 <Avatar
-                                                    name={user.name.split(' ')[0]}
+                                                    name={user?.name.split(' ')[0]}
                                                     src='https://images.unsplash.com/broken'
                                                     showFallback
                                                 />
@@ -56,9 +56,15 @@ export default function Authenticated({user, header, children}) {
 
                                     <Dropdown.Content>
                                         <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                        <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
-                                        </Dropdown.Link>
+                                        {user ? (
+                                            <Dropdown.Link href={route('logout')} method="post" as="button">
+                                                Log Out
+                                            </Dropdown.Link>
+                                        ) : (
+                                            <Dropdown.Link href={route('login')} active={route().current('login')}>
+                                                Log In
+                                            </Dropdown.Link>
+                                        )}
                                     </Dropdown.Content>
                                 </Dropdown>
                             </div>
@@ -99,8 +105,8 @@ export default function Authenticated({user, header, children}) {
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
+                            <div className="font-medium text-base text-gray-800">{user?.name}</div>
+                            <div className="font-medium text-sm text-gray-500">{user?.email}</div>
                         </div>
 
                         <div className="mt-3 space-y-1">

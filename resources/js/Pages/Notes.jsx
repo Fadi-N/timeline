@@ -257,7 +257,7 @@ const Notes = ({auth, folder, notes}) => {
                                 </li>
                                 <div>
                                     <Button
-                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        className="edit-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
                                         onClick={() => handleDeleteNote(note.id)}
                                         style={{
