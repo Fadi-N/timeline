@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Head} from "@inertiajs/react";
 import {Button} from "@nextui-org/button";
 import {BsFileEarmarkPlus, BsFilter, BsPencilSquare} from "react-icons/bs";
@@ -32,6 +32,14 @@ const Notes = ({auth, folder, notes}) => {
     const [isDragging, setIsDragging] = useState(false);
 
     const [filteredData, setFilteredData] = useState(notes)
+
+    useEffect(() => {
+        const initialOffsets = {};
+        notes.forEach(note => {
+            initialOffsets[note.id] = '';
+        });
+        setOffsets(initialOffsets);
+    }, [notes]); // Depend on folders
 
     const handleCreateNote = (e) => {
         e.preventDefault();
@@ -71,32 +79,36 @@ const Notes = ({auth, folder, notes}) => {
         });
     };
 
-    const handleMouseDown = (noteId, e) => {
+    const handleMouseDown = (nodeId, e) => {
         setIsDragging(true);
         const startX = e.clientX || e.touches[0].clientX;
+        let dx = 0; // Initialize dx here
 
         const handleMouseMove = (e) => {
             const currentX = e.clientX || e.touches[0].clientX;
-            const dx = currentX - startX;
-            const newOffset = Math.min(0, Math.max(-100, (offsets[noteId] || 0) + dx));
-            setOffsets(prevOffsets => ({...prevOffsets, [noteId]: newOffset}));
+            dx = currentX - startX; // Calculate dx as the difference
+            const newOffset = Math.min(0, Math.max(-100, (offsets[nodeId] || 0) + dx));
+            setOffsets(prevOffsets => ({ ...prevOffsets, [nodeId]: newOffset }));
         };
 
         const handleMouseUp = () => {
             setIsDragging(false);
-            const currentOffset = offsets[noteId];
 
-            if (currentOffset < -20) {
-                handleDeleteNote(noteId);
-                setOffsets(prevOffsets => ({...prevOffsets, [noteId]: 0}));
-            } else {
-                setOffsets(prevOffsets => ({...prevOffsets, [noteId]: currentOffset}));
-            }
+            // Calculate the new offset based on the latest mouse movement
+            const newOffset = Math.min(0, Math.max(-100, (offsets[nodeId] || 0) + dx));
 
+            // Update offset to "" if it's 0, otherwise keep it unchanged
+            setOffsets(prevOffsets => ({
+                ...prevOffsets,
+                [nodeId]: newOffset === 0 ? "" : newOffset // Set to "" if offset is 0
+            }));
+
+            // Clean up the event listeners
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
 
+        // Add event listeners
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
     };
@@ -218,7 +230,7 @@ const Notes = ({auth, folder, notes}) => {
                             <div className="flex relative">
                                 <li
                                     key={note.id}
-                                    className={`note-item flex flex-1 relative z-10 justify-between items-center p-6 lg:p-8 bg-yellow-custom ${offsets[note.id] === undefined ? 'rounded-[1.25rem]' : 'rounded-s-[1.25rem] rounded-e-none '}`}
+                                    className={`note-item flex flex-1 relative z-10 justify-between items-center p-6 lg:p-8 bg-yellow-custom ${offsets[note.id] === '' ? 'rounded-[1.25rem]' : 'rounded-s-[1.25rem] rounded-e-none '}`}
                                     style={{transform: `translateX(0px)`}}
                                     onMouseDown={(e) => handleMouseDown(note.id, e)}
                                 >
