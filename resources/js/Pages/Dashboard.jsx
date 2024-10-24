@@ -64,7 +64,7 @@ export default function Dashboard({auth, folders}) {
                                 >
                                     <div>
                                         <p className="text-[1.5rem] text-gray-800">{folder.name}</p>
-                                        <p className="text-gray-400">Last modification:</p>
+                                        <p className="text-gray-400">Last modification: {folder['last_note_updated_at'] ? folder['last_note_updated_at'] : 'Never'}</p>
                                     </div>
                                     <div
                                         className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer"

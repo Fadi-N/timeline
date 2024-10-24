@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Folder;
 use App\Models\Note;
 use Illuminate\Http\Request;
 
@@ -29,6 +29,9 @@ class NoteController extends Controller
         $note->folder_id = $request->folder_id;
         $note->save();
 
+        $folder = $note->folder;
+        $folder->updateLastNoteUpdatedAt();
+
         return redirect()->back()->with('success', 'Note created!');
 
     }
@@ -43,6 +46,9 @@ class NoteController extends Controller
             $note = Note::findOrFail($id);
             $note->status = $request->status;
             $note->save();
+
+            $folder = $note->folder;
+            $folder->updateLastNoteUpdatedAt();
 
             return redirect()->back()->with('success', 'Note status updated successfully!');
         }
@@ -63,6 +69,9 @@ class NoteController extends Controller
         $note->status = $request->status;
         $note->save();
 
+        $folder = $note->folder;
+        $folder->updateLastNoteUpdatedAt();
+
         return redirect()->back()->with('success', 'Note updated successfully!');
     }
 
@@ -72,8 +81,10 @@ class NoteController extends Controller
         $note = Note::findOrFail($id);
         $note->delete();
 
+        $folder = $note->folder;
+        $folder->updateLastNoteUpdatedAt();
+
         return redirect()->back()->with('success', 'Note deleted successfully!');
     }
-
 
 }
