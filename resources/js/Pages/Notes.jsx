@@ -12,6 +12,7 @@ import DropdownWrapper from "@/Components/Wrappers/DropdownWrapper.jsx";
 import RadioGroupWrapper from "@/Components/Wrappers/RadioGroupWrapper.jsx";
 import NoteForm from "@/Components/Forms/NoteForm.jsx";
 import {useNotes} from "@/Hooks/useNote.jsx";
+import NoteDescription from "@/Components/NoteDescription.jsx";
 
 const Notes = ({auth, folder, notes}) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -35,8 +36,15 @@ const Notes = ({auth, folder, notes}) => {
         handleSelectedStatus,
     } = useNotes(notes, folder, currentDate, onOpen);
 
-    console.log("===============")
-    console.log(status)
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const maxLength = 100;
+    const toggleReadMore = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    const displayText = isExpanded ? description : description.slice(0, maxLength);
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard"/>
@@ -82,9 +90,9 @@ const Notes = ({auth, folder, notes}) => {
                                     onMouseDown={(e) => handleMouseDown(note.id, e)}
                                 >
                                     <div
-                                        className={`border-s-3 px-6 w-full ${note.status === 'pending' ? 'border-s-blue-500' : note.status === 'in_progress' ? 'border-s-yellow-600' : 'border-s-green-500'}`}>
+                                        className={`border-s-3 px-6 w-full flex flex-col space-y-2 ${note.status === 'pending' ? 'border-s-blue-500' : note.status === 'in_progress' ? 'border-s-yellow-600' : 'border-s-green-500'}`}>
                                         <div className="flex items-center justify-between">
-                                            <p className="text-[1.25rem] text-gray-800">{note.title}</p>
+                                            <p className="text-[1.5rem] text-gray-800">{note.title}</p>
                                             <div className="flex items-center justify-between hidden-radio-2">
                                                 <RadioGroupWrapper
                                                     options={radioGroupStatusOptions}
@@ -93,16 +101,19 @@ const Notes = ({auth, folder, notes}) => {
                                                 />
                                             </div>
                                         </div>
-                                        <p className="text-gray-400">{note.description}</p>
+                                        <NoteDescription description={note.description}/>
                                         <div
-                                            className="flex justify-end text-[0.875rem] text-gray-400 font-semibold mt-10">
-                                            {note.start_date} - {note.end_date}
+                                            className="flex justify-end text-[0.875rem] text-gray-400 mt-10">
+                                            <p className="flex flex-col items-center">
+                                                <span>{note.start_date.split(' ')[0]} - {note.end_date.split(' ')[0]}</span>
+                                                <span>{note.start_date.split(' ')[1]} - {note.end_date.split(' ')[1]}</span>
+                                            </p>
                                         </div>
                                     </div>
                                 </li>
                                 <div>
                                     <Button
-                                        className="edit-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        className="edit-button h-full end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
                                         onClick={() => handleEditNote(note.id)}
                                         style={{
@@ -112,7 +123,7 @@ const Notes = ({auth, folder, notes}) => {
                                         <BsPencilSquare className="w-4 h-4"/>
                                     </Button>
                                     <Button
-                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        className="delete-button h-full end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
                                         color="danger"
                                         onClick={() => handleDeleteNote(note.id)}
                                         style={{

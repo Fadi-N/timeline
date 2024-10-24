@@ -63,7 +63,7 @@ export default function Dashboard({auth, folders}) {
                                     onMouseDown={(e) => handleMouseDown(folder.id, e)}
                                 >
                                     <div>
-                                        <p className="text-[1.25rem] text-gray-800">{folder.name}</p>
+                                        <p className="text-[1.5rem] text-gray-800">{folder.name}</p>
                                         <p className="text-gray-400">Last modification:</p>
                                     </div>
                                     <div
@@ -74,7 +74,7 @@ export default function Dashboard({auth, folders}) {
                                 </li>
                                 <div>
                                     <Button
-                                        className="h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        className="h-auto end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
                                         onClick={() => handleEditFolder(folder.id)}
                                         style={{
@@ -84,7 +84,7 @@ export default function Dashboard({auth, folders}) {
                                         <FaPencilAlt className="w-4 h-4"/>
                                     </Button>
                                     <Button
-                                        className="h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        className="h-auto end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
                                         color="danger"
                                         onClick={() => handleDeleteFolder(folder.id)}
                                         style={{
