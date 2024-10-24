@@ -25,7 +25,7 @@ export default function Dashboard({auth, folders}) {
         goToNotes,
         handleDeleteFolder,
         handleUpdateFolder,
-    } = useFolder(folders); // Use your custom hook
+    } = useFolder(folders, onOpen); // Use your custom hook
 
     useEffect(() => {
         const initialOffsets = {};

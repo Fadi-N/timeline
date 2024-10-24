@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 
-export const useFolder = (folders) => {
+export const useFolder = (folders, onOpen) => {
     const [newFolderName, setNewFolderName] = useState('');
     const [editFolderId, setEditFolderId] = useState(null);
     const [offsets, setOffsets] = useState({});
@@ -29,6 +29,7 @@ export const useFolder = (folders) => {
         const folderToEdit = folders.find(folder => folder.id === folderId);
         setNewFolderName(folderToEdit.name);
         setEditFolderId(folderId);
+        onOpen();
     };
 
     const goToNotes = (folderId) => {

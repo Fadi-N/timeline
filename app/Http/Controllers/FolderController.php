@@ -48,6 +48,22 @@ class FolderController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        // Find the folder and update it
+        $folder = Folder::findOrFail($id);
+        $folder->name = $request->input('name');
+        $folder->save();
+
+        // Optionally return a response
+        return redirect()->route('folders')->with('success', 'Folder updated successfully.');
+    }
+
     public function destroy($id)
     {
         $folder = Folder::findOrFail($id);

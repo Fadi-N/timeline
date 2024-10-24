@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
     Route::get('/folder/notes', [FolderController::class, 'showNotesById'])->middleware(['auth', 'verified'])->name('folders.notes');
+    Route::patch('/folders/{id}', [FolderController::class, 'update'])->name('folders.update');
     Route::delete('/folders/{id}', [FolderController::class, 'destroy'])->name('folders.destroy');
 
     Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
