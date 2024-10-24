@@ -19,6 +19,7 @@ import {getLocalTimeZone, parseZonedDateTime, today} from "@internationalized/da
 import {Inertia} from "@inertiajs/inertia";
 import {FaRegTrashCan} from "react-icons/fa6";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
+import DropdownWrapper from "@/Components/DropdownWrapper.jsx";
 
 const Notes = ({auth, folder, notes}) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -96,13 +97,10 @@ const Notes = ({auth, folder, notes}) => {
         if (selectedStatus === "All") {
             setFilteredData(notes);
         } else {
-            const filtered = notes.filter(note => note.status === selectedStatus.toLowerCase());
+            const filtered = notes.filter(note => note.status === selectedStatus.toLowerCase().replace(' ', '_'));
             setFilteredData(filtered);
         }
     };
-
-
-    console.log(filteredData)
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -129,64 +127,12 @@ const Notes = ({auth, folder, notes}) => {
                             className="h-auto"
                             orientation="vertical"
                         />
-                        <Dropdown
-                            showArrow
-                            radius="sm"
-                            classNames={{
-                                base: "before:bg-default-200",
-                                content: "p-0 border-small border-divider bg-background",
-                            }}
-                        >
-                            <DropdownTrigger>
-                                <Button
-                                    className="mx-4"
-                                    variant="light"
-                                    startContent={<BsFilter className="w-4 h-4"/>}
-                                    size={"sm"}
-                                >
-                                    Filters
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                aria-label="Custom item styles"
-                                className="p-3"
-                                itemClasses={{
-                                    base: [
-                                        "rounded-md",
-                                        "text-default-500",
-                                        "transition-opacity",
-                                        "data-[hover=true]:text-foreground",
-                                        "data-[hover=true]:bg-default-100",
-                                        "dark:data-[hover=true]:bg-default-50",
-                                        "data-[selectable=true]:focus:bg-default-50",
-                                        "data-[pressed=true]:opacity-70",
-                                        "data-[focus-visible=true]:ring-default-500",
-                                    ],
-                                }}
-                            >
-                                <DropdownSection aria-label="Preferences">
-                                    <DropdownItem
-                                        isReadOnly
-                                        key="theme"
-                                        className="cursor-default space-x-4"
-                                        endContent={
-                                            <select
-                                                className="z-10 outline-none w-32 py-0.5 rounded-md text-tiny group-data-[hover=true]:border-default-500 border-small border-default-300 dark:border-default-200 bg-transparent text-default-500"
-                                                id="status"
-                                                name="status"
-                                                onChange={handleSelectedStatus}
-                                            >
-                                                {["All", "Pending", "In Progress", "Completed"].map((status) => (
-                                                    <option>{status}</option>
-                                                ))}
-                                            </select>
-                                        }
-                                    >
-                                        Status
-                                    </DropdownItem>
-                                </DropdownSection>
-                            </DropdownMenu>
-                        </Dropdown>
+                        <DropdownWrapper
+                            label="Filters"
+                            options={["All", "Pending", "In Progress", "Completed"]}
+                            onChange={handleSelectedStatus}
+                            defaultValue="All"
+                        />
                     </div>
                 </div>
                 <Divider/>
