@@ -18,9 +18,12 @@ import ModalWrapper from "@/Components/ModalWrapper.jsx";
 import {getLocalTimeZone, parseZonedDateTime, today} from "@internationalized/date";
 import {Inertia} from "@inertiajs/inertia";
 import {FaRegTrashCan} from "react-icons/fa6";
+import {useDraggable} from "@/Hooks/useDraggable.jsx";
 
 const Notes = ({auth, folder, notes}) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const { offsets, handleMouseDown, setOffsets } = useDraggable({});
+
     const currentDate = today(getLocalTimeZone("Europe/Warsaw"));
 
     const [title, setTitle] = useState('');
@@ -28,8 +31,6 @@ const Notes = ({auth, folder, notes}) => {
     const [startDate, setStartDate] = useState(currentDate);
     const [endDate, setEndDate] = useState(currentDate.add({days: 7}));
     const [status, setStatus] = useState('pending');
-    const [offsets, setOffsets] = useState({});
-    const [isDragging, setIsDragging] = useState(false);
 
     const [filteredData, setFilteredData] = useState(notes)
 
@@ -78,41 +79,6 @@ const Notes = ({auth, folder, notes}) => {
             }
         });
     };
-
-    const handleMouseDown = (nodeId, e) => {
-        setIsDragging(true);
-        const startX = e.clientX || e.touches[0].clientX;
-        let dx = 0; // Initialize dx here
-
-        const handleMouseMove = (e) => {
-            const currentX = e.clientX || e.touches[0].clientX;
-            dx = currentX - startX; // Calculate dx as the difference
-            const newOffset = Math.min(0, Math.max(-100, (offsets[nodeId] || 0) + dx));
-            setOffsets(prevOffsets => ({ ...prevOffsets, [nodeId]: newOffset }));
-        };
-
-        const handleMouseUp = () => {
-            setIsDragging(false);
-
-            // Calculate the new offset based on the latest mouse movement
-            const newOffset = Math.min(0, Math.max(-100, (offsets[nodeId] || 0) + dx));
-
-            // Update offset to "" if it's 0, otherwise keep it unchanged
-            setOffsets(prevOffsets => ({
-                ...prevOffsets,
-                [nodeId]: newOffset === 0 ? "" : newOffset // Set to "" if offset is 0
-            }));
-
-            // Clean up the event listeners
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
-
-        // Add event listeners
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-    };
-
 
     const handleDeleteNote = (noteId) => {
         Inertia.delete(`/notes/${noteId}`, {

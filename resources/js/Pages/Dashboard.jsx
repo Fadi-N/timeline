@@ -9,13 +9,14 @@ import {FaAngleRight, FaRegTrashCan} from "react-icons/fa6";
 import {useState, useEffect} from "react"; // Import useEffect
 import {FaPencilAlt} from "react-icons/fa";
 import ModalWrapper from "@/Components/ModalWrapper.jsx";
+import {useDraggable} from "@/Hooks/useDraggable.jsx";
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const { offsets, handleMouseDown, setOffsets } = useDraggable({});
+
     const [newFolderName, setNewFolderName] = useState('');
     const [editFolderId, setEditFolderId] = useState(null);
-    const [offsets, setOffsets] = useState({});
-    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         const initialOffsets = {};
@@ -45,41 +46,6 @@ export default function Dashboard({auth, folders}) {
     const goToNotes = (folderId) => {
         Inertia.get(`/folder/notes?id=${folderId}`);
     };
-
-    const handleMouseDown = (folderId, e) => {
-        setIsDragging(true);
-        const startX = e.clientX || e.touches[0].clientX;
-        let dx = 0; // Initialize dx here
-
-        const handleMouseMove = (e) => {
-            const currentX = e.clientX || e.touches[0].clientX;
-            dx = currentX - startX; // Calculate dx as the difference
-            const newOffset = Math.min(0, Math.max(-100, (offsets[folderId] || 0) + dx));
-            setOffsets(prevOffsets => ({ ...prevOffsets, [folderId]: newOffset }));
-        };
-
-        const handleMouseUp = () => {
-            setIsDragging(false);
-
-            // Calculate the new offset based on the latest mouse movement
-            const newOffset = Math.min(0, Math.max(-100, (offsets[folderId] || 0) + dx));
-
-            // Update offset to "" if it's 0, otherwise keep it unchanged
-            setOffsets(prevOffsets => ({
-                ...prevOffsets,
-                [folderId]: newOffset === 0 ? "" : newOffset // Set to "" if offset is 0
-            }));
-
-            // Clean up the event listeners
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
-        };
-
-        // Add event listeners
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-    };
-
 
     const handleDeleteFolder = (folderId) => {
         Inertia.delete(`/folders/${folderId}`, {
