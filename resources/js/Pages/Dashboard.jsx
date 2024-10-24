@@ -10,10 +10,11 @@ import {useState, useEffect} from "react"; // Import useEffect
 import {FaPencilAlt} from "react-icons/fa";
 import ModalWrapper from "@/Components/ModalWrapper.jsx";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
+import NewFolderForm from "@/Components/NewFolderForm.jsx";
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const { offsets, handleMouseDown, setOffsets } = useDraggable({});
+    const {offsets, handleMouseDown, setOffsets} = useDraggable({});
 
     const [newFolderName, setNewFolderName] = useState('');
     const [editFolderId, setEditFolderId] = useState(null);
@@ -108,7 +109,7 @@ export default function Dashboard({auth, folders}) {
                                 </li>
                                 <div>
                                     <Button
-                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        className="h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
                                         onClick={() => handleEditFolder(folder.id)}
                                         style={{
@@ -118,7 +119,7 @@ export default function Dashboard({auth, folders}) {
                                         <FaPencilAlt className="w-4 h-4"/>
                                     </Button>
                                     <Button
-                                        className="delete-button h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        className="h-[179px] end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
                                         color="danger"
                                         onClick={() => handleDeleteFolder(folder.id)}
                                         style={{
@@ -141,15 +142,11 @@ export default function Dashboard({auth, folders}) {
                 submitButtonText={editFolderId ? "Update Folder" : "Create Folder"}
                 onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}
             >
-                <form onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}>
-                    <Input
-                        className="custom-input"
-                        type="text"
-                        label="Folder Name"
-                        value={newFolderName}
-                        onChange={(e) => setNewFolderName(e.target.value)}
-                    />
-                </form>
+                <NewFolderForm
+                    value={newFolderName}
+                    onChange={(e) => setNewFolderName(e.target.value)}
+                    onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}
+                />
             </ModalWrapper>
         </AuthenticatedLayout>
     );
