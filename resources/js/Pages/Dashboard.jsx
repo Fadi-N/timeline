@@ -8,9 +8,9 @@ import {Input} from "@nextui-org/input";
 import {FaAngleRight, FaRegTrashCan} from "react-icons/fa6";
 import {useState, useEffect} from "react"; // Import useEffect
 import {FaPencilAlt} from "react-icons/fa";
-import ModalWrapper from "@/Components/ModalWrapper.jsx";
+import ModalWrapper from "@/Components/Wrappers/ModalWrapper.jsx";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
-import NewFolderForm from "@/Components/NewFolderForm.jsx";
+import NewFolderForm from "@/Components/Forms/NewFolderForm.jsx";
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();

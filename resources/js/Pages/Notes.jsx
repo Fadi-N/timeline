@@ -14,12 +14,13 @@ import {
 } from "@nextui-org/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import {Input} from "@nextui-org/input";
-import ModalWrapper from "@/Components/ModalWrapper.jsx";
+import ModalWrapper from "@/Components/Wrappers/ModalWrapper.jsx";
 import {getLocalTimeZone, parseZonedDateTime, today} from "@internationalized/date";
 import {Inertia} from "@inertiajs/inertia";
 import {FaRegTrashCan} from "react-icons/fa6";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
-import DropdownWrapper from "@/Components/DropdownWrapper.jsx";
+import DropdownWrapper from "@/Components/Wrappers/DropdownWrapper.jsx";
+import RadioGroupWrapper from "@/Components/Wrappers/RadioGroupWrapper.jsx";
 
 const Notes = ({auth, folder, notes}) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -33,7 +34,13 @@ const Notes = ({auth, folder, notes}) => {
     const [endDate, setEndDate] = useState(currentDate.add({days: 7}));
     const [status, setStatus] = useState('pending');
 
-    const [filteredData, setFilteredData] = useState(notes)
+    const [filteredData, setFilteredData] = useState(notes);
+
+    const radioGroupStatusOptions = [
+        { value: 'pending', label: '', hoverColor: 'bg-blue-500', activeColor: 'bg-blue-500' },
+        { value: 'in_progress', label: '', hoverColor: 'bg-yellow-600', activeColor: 'bg-yellow-600' },
+        { value: 'completed', label: '', hoverColor: 'bg-green-500', activeColor: 'bg-green-500' },
+    ];
 
     useEffect(() => {
         const initialOffsets = {};
@@ -151,25 +158,11 @@ const Notes = ({auth, folder, notes}) => {
                                         <div className="flex items-center justify-between">
                                             <p className="text-[1.25rem] text-gray-800">{note.title}</p>
                                             <div className="flex items-center justify-between hidden-radio-2">
-                                                <RadioGroup
-                                                    className="flex flex-row items-center justify-between w-full"
-                                                    orientation="horizontal" defaultValue={note.status}>
-                                                    <Chip
-                                                        className={`chip-custom hover:bg-blue-500 ${note.status === 'pending' ? 'bg-blue-500' : 'bg-gray-300'}`}
-                                                        onClick={() => handleChipClick(note.id, 'pending')}
-                                                    >
-                                                    </Chip>
-                                                    <Chip
-                                                        className={`chip-custom hover:bg-yellow-600 ${note.status === 'in_progress' ? 'bg-yellow-600' : 'bg-gray-300'}`}
-                                                        onClick={() => handleChipClick(note.id, 'in_progress')}
-                                                    >
-                                                    </Chip>
-                                                    <Chip
-                                                        className={`chip-custom hover:bg-green-500 ${note.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'}`}
-                                                        onClick={() => handleChipClick(note.id, 'completed')}
-                                                    >
-                                                    </Chip>
-                                                </RadioGroup>
+                                                <RadioGroupWrapper
+                                                    options={radioGroupStatusOptions}
+                                                    selectedValue={note.status}
+                                                    onChange={(newStatus) => handleChipClick(note.id, newStatus)}
+                                                />
                                             </div>
                                         </div>
                                         <p className="text-gray-400">{note.description}</p>
