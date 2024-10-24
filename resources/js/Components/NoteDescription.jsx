@@ -8,7 +8,11 @@ const NoteDescription = ({ description, maxLength = 100 }) => {
         setIsExpanded(!isExpanded);
     };
 
-    const displayText = isExpanded ? description : description.slice(0, maxLength) + '...';
+    const isLongDescription = description.length > maxLength;
+
+    const displayText = isExpanded || !isLongDescription
+        ? description
+        : description.slice(0, maxLength) + '...';
 
     return (
         <div>
