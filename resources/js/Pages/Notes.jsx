@@ -79,7 +79,7 @@ const Notes = ({auth, folder, notes}) => {
                     </div>
                 </div>
                 <Divider/>
-                <div className="p-4">
+                <div className="mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
                     <ul className="flex flex-col space-y-3">
                         {filteredData?.map(note => (
                             <div className="flex relative">

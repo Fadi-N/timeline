@@ -53,7 +53,7 @@ export default function Dashboard({auth, folders}) {
                     </Button>
                 </div>
                 <Divider/>
-                <div className="p-4">
+                <div className="mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
                     <ul className="flex flex-col space-y-3">
                         {folders?.map(folder => (
                             <div className="flex relative" key={folder.id}>
