@@ -10,7 +10,7 @@ import {FaRegTrashCan} from "react-icons/fa6";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
 import DropdownWrapper from "@/Components/Wrappers/DropdownWrapper.jsx";
 import RadioGroupWrapper from "@/Components/Wrappers/RadioGroupWrapper.jsx";
-import NewNoteForm from "@/Components/Forms/NewNoteForm.jsx";
+import NoteForm from "@/Components/Forms/NoteForm.jsx";
 import {useNotes} from "@/Hooks/useNote.jsx";
 
 const Notes = ({auth, folder, notes}) => {
@@ -25,13 +25,18 @@ const Notes = ({auth, folder, notes}) => {
         startDate, setStartDate,
         endDate, setEndDate,
         status, setStatus,
+        editNoteId, setEditNoteId,
         filteredData, radioGroupStatusOptions,
         handleCreateNote,
         handleChipClick,
+        handleEditNote,
+        handleUpdateNote,
         handleDeleteNote,
-        handleSelectedStatus
-    } = useNotes(notes, folder, currentDate);
+        handleSelectedStatus,
+    } = useNotes(notes, folder, currentDate, onOpen);
 
+    console.log("===============")
+    console.log(status)
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard"/>
@@ -99,7 +104,7 @@ const Notes = ({auth, folder, notes}) => {
                                     <Button
                                         className="edit-button h-[179px] end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
-                                        onClick={() => handleDeleteNote(note.id)}
+                                        onClick={() => handleEditNote(note.id)}
                                         style={{
                                             width: `${-offsets[note.id]}px`,
                                         }}
@@ -126,11 +131,11 @@ const Notes = ({auth, folder, notes}) => {
             <ModalWrapper
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                title="New Note"
-                submitButtonText="Create Note"
-                onSubmit={handleCreateNote}
+                title={editNoteId ? "Edit Note" : "New Note"}
+                submitButtonText={editNoteId ? "Update Note" : "Create Note"}
+                onSubmit={editNoteId ? handleUpdateNote : handleCreateNote}
             >
-                <NewNoteForm
+                <NoteForm
                     title={title}
                     setTitle={setTitle}
                     description={description}

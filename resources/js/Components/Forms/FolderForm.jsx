@@ -1,7 +1,7 @@
 import React from 'react';
 import {Input} from "@nextui-org/input";
 
-const EditFolderForm =  ({value, onChange, onSubmit}) => {
+const FolderForm = ({value, onChange, onSubmit}) => {
     return (
         <form onSubmit={onSubmit}>
             <Input
@@ -15,4 +15,4 @@ const EditFolderForm =  ({value, onChange, onSubmit}) => {
     );
 };
 
-export default EditFolderForm;
+export default FolderForm;

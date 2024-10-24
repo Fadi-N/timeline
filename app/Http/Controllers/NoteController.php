@@ -35,16 +35,37 @@ class NoteController extends Controller
 
     public function update(Request $request, $id)
     {
+        if ($request->has('status') && count($request->all()) == 1) {
+            $request->validate([
+                'status' => 'required|in:pending,in_progress,completed',
+            ]);
+
+            $note = Note::findOrFail($id);
+            $note->status = $request->status;
+            $note->save();
+
+            return redirect()->back()->with('success', 'Note status updated successfully!');
+        }
+
         $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date_format:Y-m-d H:i:s',
+            'end_date' => 'required|date_format:Y-m-d H:i:s|after_or_equal:start_date',
             'status' => 'required|in:pending,in_progress,completed',
         ]);
 
         $note = Note::findOrFail($id);
+        $note->title = $request->title;
+        $note->description = $request->description;
+        $note->start_date = $request->start_date;
+        $note->end_date = $request->end_date;
         $note->status = $request->status;
         $note->save();
 
-        return redirect()->back()->with('success', 'Note created!');
+        return redirect()->back()->with('success', 'Note updated successfully!');
     }
+
 
     public function destroy($id)
     {

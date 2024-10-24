@@ -4,7 +4,7 @@ import { DateRangePicker } from "@nextui-org/react";
 import { parseZonedDateTime } from "@internationalized/date";
 import { Radio, RadioGroup, Chip } from "@nextui-org/react";
 
-const NewNoteForm = ({
+const NoteForm = ({
                          title, setTitle,
                          description, setDescription,
                          startDate, setStartDate,
@@ -48,9 +48,10 @@ const NewNoteForm = ({
                     className="flex flex-row items-center justify-between w-full"
                     label="Status"
                     orientation="horizontal"
-                    defaultValue="pending"
                     value={status}
-                    onChange={setStatus}
+                    onChange={(e) => {
+                        setStatus(e.target.value)
+                    }}
                 >
                     <Chip
                         className={`hover:bg-blue-500 ${status === 'pending' ? 'bg-blue-500' : 'bg-gray-200'}`}
@@ -85,4 +86,4 @@ const NewNoteForm = ({
     );
 };
 
-export default NewNoteForm;
+export default NoteForm;

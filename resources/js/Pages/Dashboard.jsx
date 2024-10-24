@@ -8,7 +8,7 @@ import {useEffect} from "react";
 import {FaPencilAlt} from "react-icons/fa";
 import ModalWrapper from "@/Components/Wrappers/ModalWrapper.jsx";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
-import NewFolderForm from "@/Components/Forms/NewFolderForm.jsx";
+import FolderForm from "@/Components/Forms/FolderForm.jsx";
 import { useFolder } from "@/Hooks/useFolder"; // Import your custom hook
 
 export default function Dashboard({auth, folders}) {
@@ -107,7 +107,7 @@ export default function Dashboard({auth, folders}) {
                 submitButtonText={editFolderId ? "Update Folder" : "Create Folder"}
                 onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}
             >
-                <NewFolderForm
+                <FolderForm
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                     onSubmit={editFolderId ? handleUpdateFolder : handleCreateFolder}
