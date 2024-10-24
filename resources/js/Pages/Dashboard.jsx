@@ -1,23 +1,31 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {Head} from '@inertiajs/react';
-import {Inertia} from '@inertiajs/inertia';
 import {Button} from "@nextui-org/button";
 import {BsFolderPlus} from "react-icons/bs";
 import {Divider, useDisclosure} from "@nextui-org/react";
-import {Input} from "@nextui-org/input";
 import {FaAngleRight, FaRegTrashCan} from "react-icons/fa6";
-import {useState, useEffect} from "react"; // Import useEffect
+import {useEffect} from "react";
 import {FaPencilAlt} from "react-icons/fa";
 import ModalWrapper from "@/Components/Wrappers/ModalWrapper.jsx";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
 import NewFolderForm from "@/Components/Forms/NewFolderForm.jsx";
+import { useFolder } from "@/Hooks/useFolder"; // Import your custom hook
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const {offsets, handleMouseDown, setOffsets} = useDraggable({});
+    const { offsets, handleMouseDown, setOffsets } = useDraggable({});
 
-    const [newFolderName, setNewFolderName] = useState('');
-    const [editFolderId, setEditFolderId] = useState(null);
+    const {
+        newFolderName,
+        setNewFolderName,
+        editFolderId,
+        setEditFolderId,
+        handleCreateFolder,
+        handleEditFolder,
+        goToNotes,
+        handleDeleteFolder,
+        handleUpdateFolder,
+    } = useFolder(folders); // Use your custom hook
 
     useEffect(() => {
         const initialOffsets = {};
@@ -26,49 +34,6 @@ export default function Dashboard({auth, folders}) {
         });
         setOffsets(initialOffsets);
     }, [folders]); // Depend on folders
-
-    const handleCreateFolder = (e) => {
-        e.preventDefault();
-        Inertia.post('/folders', {name: newFolderName}, {
-            onSuccess: () => {
-                onOpenChange(false);
-                setNewFolderName('');
-            }
-        });
-    };
-
-    const handleEditFolder = (folderId) => {
-        const folderToEdit = folders.find(folder => folder.id === folderId);
-        setNewFolderName(folderToEdit.name);
-        setEditFolderId(folderId);
-        onOpenChange(true);
-    };
-
-    const goToNotes = (folderId) => {
-        Inertia.get(`/folder/notes?id=${folderId}`);
-    };
-
-    const handleDeleteFolder = (folderId) => {
-        Inertia.delete(`/folders/${folderId}`, {
-            onSuccess: () => {
-                console.log('Folder deleted successfully');
-            },
-            onError: (error) => {
-                console.error('Error deleting folder:', error);
-            }
-        });
-    };
-
-    const handleUpdateFolder = (e) => {
-        e.preventDefault();
-        Inertia.patch(`/folders/${editFolderId}`, {name: newFolderName}, {
-            onSuccess: () => {
-                onOpenChange(false);
-                setNewFolderName('');
-                setEditFolderId(null);
-            }
-        });
-    };
 
     return (
         <AuthenticatedLayout user={auth.user}>
