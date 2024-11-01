@@ -56,7 +56,7 @@ const Notes = ({auth, folder, notes}) => {
                             Folder
                         </a> > {folder.name}
                     </div>
-                    <div className="flex">
+                    <div className="toolbar flex">
                         <Button
                             className="mx-4"
                             variant="light"
@@ -79,7 +79,7 @@ const Notes = ({auth, folder, notes}) => {
                     </div>
                 </div>
                 <Divider/>
-                <div className="mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
+                <div className="listing mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
                     <ul className="flex flex-col space-y-3">
                         {filteredData?.map(note => (
                             <div className="flex relative">
@@ -93,7 +93,7 @@ const Notes = ({auth, folder, notes}) => {
                                         className={`border-s-3 px-6 w-full flex flex-col space-y-2 ${note.status === 'pending' ? 'border-s-blue-500' : note.status === 'in_progress' ? 'border-s-yellow-600' : 'border-s-green-500'}`}>
                                         <div className="flex items-center justify-between">
                                             <p className="text-[1.5rem] text-gray-800">{note.title}</p>
-                                            <div className="flex items-center justify-between hidden-radio-2">
+                                            <div className="change-status-container flex items-center justify-between hidden-radio-2">
                                                 <RadioGroupWrapper
                                                     options={radioGroupStatusOptions}
                                                     selectedValue={note.status}

@@ -46,3 +46,20 @@ body{
         padding: 0;
     }
 }
+
+@media print{
+    nav, button, .toolbar, .go-to-notes-btn, .change-status-container{
+        display: none !important;
+    }
+
+    .listing {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .listing li {
+        background-color: #FFDF70 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}

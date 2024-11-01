@@ -42,18 +42,20 @@ export default function Dashboard({auth, folders}) {
             <div className="container mx-auto px-4 bg-white min-h-[calc(100vh-65px)]">
                 <div className="flex items-center justify-between py-4">
                     <div className="ps-4 text-[1.25rem] lg:text-[1.375rem] text-gray-400">Folders</div>
-                    <Button
-                        className="mx-4"
-                        variant="light"
-                        startContent={<BsFolderPlus className="w-4 h-4"/>}
-                        size={"sm"}
-                        onClick={onOpen}
-                    >
-                        New Folder
-                    </Button>
+                    <div className="toolbar">
+                        <Button
+                            className="mx-4"
+                            variant="light"
+                            startContent={<BsFolderPlus className="w-4 h-4"/>}
+                            size={"sm"}
+                            onClick={onOpen}
+                        >
+                            New Folder
+                        </Button>
+                    </div>
                 </div>
                 <Divider/>
-                <div className="mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
+                <div className="listing mt-4 p-4 h-[calc(100vh-147px)] overflow-y-auto">
                     <ul className="flex flex-col space-y-3">
                         {folders?.map(folder => (
                             <div className="flex relative" key={folder.id}>
@@ -67,7 +69,7 @@ export default function Dashboard({auth, folders}) {
                                         <p className="text-gray-400">Last modification: {folder['last_note_updated_at'] ? folder['last_note_updated_at'] : 'Never'}</p>
                                     </div>
                                     <div
-                                        className="flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer"
+                                        className="go-to-notes-btn flex items-center justify-center bg-gray-800 rounded-full w-12 h-12 hover:cursor-pointer"
                                         onClick={() => goToNotes(folder.id)}>
                                         <FaAngleRight className="text-white w-4 h-4"/>
                                     </div>
