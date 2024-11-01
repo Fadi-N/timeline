@@ -38,8 +38,9 @@ export default function Authenticated({user, header, children}) {
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
                             <div className="ms-3 relative">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
+                                {user && (
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
@@ -52,21 +53,22 @@ export default function Authenticated({user, header, children}) {
                                                 />
                                             </button>
                                         </span>
-                                    </Dropdown.Trigger>
+                                        </Dropdown.Trigger>
 
-                                    <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                        {user ? (
-                                            <Dropdown.Link href={route('logout')} method="post" as="button">
-                                                Log Out
-                                            </Dropdown.Link>
-                                        ) : (
-                                            <Dropdown.Link href={route('login')} active={route().current('login')}>
-                                                Log In
-                                            </Dropdown.Link>
-                                        )}
-                                    </Dropdown.Content>
-                                </Dropdown>
+                                        <Dropdown.Content>
+                                            <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                                            {user ? (
+                                                <Dropdown.Link href={route('logout')} method="post" as="button">
+                                                    Log Out
+                                                </Dropdown.Link>
+                                            ) : (
+                                                <Dropdown.Link href={route('login')} active={route().current('login')}>
+                                                    Log In
+                                                </Dropdown.Link>
+                                            )}
+                                        </Dropdown.Content>
+                                    </Dropdown>
+                                )}
                             </div>
                         </div>
 
