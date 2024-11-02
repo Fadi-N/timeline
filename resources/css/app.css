@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+body {
     overflow-y: hidden;
 }
 
@@ -29,11 +29,11 @@ body{
         }
     }
 
-    .chip-custom{
+    .chip-custom {
         width: 1.375rem;
         height: 1.375rem;
 
-        > span{
+        > span {
             padding: 0;
             width: 1.375rem;
             height: 1.375rem;
@@ -42,19 +42,22 @@ body{
 }
 
 .hidden-radio-2 {
-    div, span{
+    div, span {
         padding: 0;
     }
 }
 
-@media print{
-    nav, button, .toolbar, .go-to-notes-btn, .change-status-container{
+@media print {
+    nav, aside, button, .toolbar, .go-to-notes-btn, .change-status-container {
         display: none !important;
     }
 
-    .listing {
+    .listing, .documentation-container {
         height: auto !important;
         overflow: visible !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
     }
 
     .listing li {

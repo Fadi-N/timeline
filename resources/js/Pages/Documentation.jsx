@@ -34,7 +34,7 @@ const Documentation = ({auth}) => {
                 </aside>
 
                 {/* Main Content */}
-                <main className="w-3/4 p-8 overflow-y-scroll h-[calc(100vh-65px)]">
+                <main className="documentation-container w-3/4 p-8 overflow-y-scroll h-[calc(100vh-65px)]">
                     <h1 className="text-3xl font-bold text-gray-800 mb-8">Note Management Application Documentation</h1>
 
                     {/* Section 1: Introduction */}
