@@ -6,7 +6,7 @@ body {
     overflow-y: hidden;
 }
 
-[type='text'] {
+[type='text'], [type='email'], [type='password'] {
     border: none;
 
     &:focus {

@@ -11,7 +11,7 @@ const Documentation = ({auth}) => {
 
             <div className="flex h-[calc(100vh-65px)] bg-gray-100">
                 {/* Sidebar Navigation */}
-                <aside className="w-1/4 bg-white shadow-lg p-6">
+                <aside className="w-1/4 bg-white shadow-lg p-6 hidden md:inline-block">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">Documentation</h2>
                     <nav className="space-y-2">
                         <a href="#introduction" className="block text-gray-600 hover:text-yellow-custom">1.
@@ -34,7 +34,7 @@ const Documentation = ({auth}) => {
                 </aside>
 
                 {/* Main Content */}
-                <main className="documentation-container w-3/4 p-8 overflow-y-scroll h-[calc(100vh-65px)]">
+                <main className="documentation-container w-full md:w-3/4 p-8 overflow-y-scroll h-[calc(100vh-65px)]">
                     <h1 className="text-3xl font-bold text-gray-800 mb-8">Note Management Application Documentation</h1>
 
                     {/* Section 1: Introduction */}

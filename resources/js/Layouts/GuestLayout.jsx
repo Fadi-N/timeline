@@ -1,17 +1,37 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import { Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+import { usePage } from '@inertiajs/react'; // Hook to get the current URL from Inertia.js
+import loginLogo from '../../../public/img/login-logo.jpg';
+import registrationLogo from '../../../public/img/registration-logo.jpg';
 
 export default function Guest({ children }) {
+    const { url } = usePage(); // Get the current URL
+    const [image, setImage] = useState(loginLogo);
+
+    useEffect(() => {
+        // Set the image based on the current path
+        if (url.includes('register')) {
+            setImage(registrationLogo);
+        } else {
+            setImage(loginLogo);
+        }
+    }, [url]);
+
     return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
-                </Link>
+        <div className="h-[100vh] flex">
+            {/* Left side: Image */}
+            <div className="w-1/2 bg-gray-100 hidden md:inline-block">
+                <img
+                    src={image}
+                    alt="Note Management Application"
+                    className="object-cover w-full h-full"
+                />
             </div>
 
-            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {children}
+            {/* Right side: Logo and Content */}
+            <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-white mx-6 md:mx-0">
+                <div className="w-full sm:max-w-md">
+                    {children}
+                </div>
             </div>
         </div>
     );

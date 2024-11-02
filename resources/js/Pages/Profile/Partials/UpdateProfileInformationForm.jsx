@@ -4,6 +4,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import {Input} from "@nextui-org/input";
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
@@ -31,34 +32,30 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
+                    <Input
+                        className="custom-input"
+                        label="Name"
                         id="name"
-                        className="mt-1 block w-full"
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
                         required
                         isFocused
                         autoComplete="name"
                     />
-
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
+                    <Input
+                        className="custom-input"
+                        label="Email"
                         id="email"
                         type="email"
-                        className="mt-1 block w-full"
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                         required
                         autoComplete="username"
                     />
-
                     <InputError className="mt-2" message={errors.email} />
                 </div>
 
@@ -84,7 +81,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                     </div>
                 )}
 
-                <div className="flex items-center gap-4">
+                <div className="flex w-full items-center gap-4">
                     <PrimaryButton disabled={processing}>Save</PrimaryButton>
 
                     <Transition

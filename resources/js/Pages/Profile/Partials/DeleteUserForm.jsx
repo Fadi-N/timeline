@@ -44,7 +44,7 @@ export default function DeleteUserForm({ className = '' }) {
     };
 
     return (
-        <section className={`space-y-6 ${className}`}>
+        <section className={`space-y-6 flex flex-col justify-between h-full ${className}`}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">Delete Account</h2>
 
@@ -88,7 +88,7 @@ export default function DeleteUserForm({ className = '' }) {
                     <div className="mt-6 flex justify-end">
                         <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
 
-                        <DangerButton className="ms-3" disabled={processing}>
+                        <DangerButton disabled={processing}>
                             Delete Account
                         </DangerButton>
                     </div>

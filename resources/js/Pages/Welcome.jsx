@@ -121,7 +121,7 @@ export default function Home({auth, laravelVersion, phpVersion}) {
                                     Create an account to start managing your notes.
                                 </p>
                             </div>
-                            <div className="bg-yellow-custom w-[20px] h-[3px]"></div>
+                            <div className="bg-yellow-custom w-[3px] h-[20px] md:w-[20px] md:h-[3px]"></div>
                             <div
                                 className="step flex flex-col items-center justify-center p-6 border-3 rounded-2xl border-yellow-custom">
                                 <div
@@ -133,7 +133,7 @@ export default function Home({auth, laravelVersion, phpVersion}) {
                                     Add notes, organize them into folders, and set statuses and deadlines.
                                 </p>
                             </div>
-                            <div className="bg-yellow-custom w-[20px] h-[3px]"></div>
+                            <div className="bg-yellow-custom w-[3px] h-[20px] md:w-[20px] md:h-[3px]"></div>
                             <div
                                 className="step flex flex-col items-center justify-center p-6 border-3 rounded-2xl border-yellow-custom">
                                 <div
