@@ -76,7 +76,7 @@ export default function Dashboard({auth, folders}) {
                                 </li>
                                 <div>
                                     <Button
-                                        className="h-auto end-0 z-0 min-w-0 rounded-none px-0 w-0"
+                                        className="edit-button h-full end-0 z-0 min-w-0 rounded-none px-0 w-0"
                                         color="secondary"
                                         onClick={() => handleEditFolder(folder.id)}
                                         style={{
@@ -86,7 +86,7 @@ export default function Dashboard({auth, folders}) {
                                         <FaPencilAlt className="w-4 h-4"/>
                                     </Button>
                                     <Button
-                                        className="h-auto end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
+                                        className="delete-button h-full end-0 z-0 min-w-0 rounded-s-none rounded-e-[1.25rem] px-0 w-0"
                                         color="danger"
                                         onClick={() => handleDeleteFolder(folder.id)}
                                         style={{
