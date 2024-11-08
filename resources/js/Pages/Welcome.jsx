@@ -19,29 +19,30 @@ export default function Home({auth, laravelVersion, phpVersion}) {
                     <p className="text-lg text-gray-600 mt-4">
                         Store, organize, and review your notes and folders in one convenient place.
                     </p>
-                    <div className="mt-6">
-
-                        <Button
-                            className="mx-2 bg-gray-800 text-white"
-                            as={Link}
-                            href={route('login')}
-                            color="default"
-                            size="lg"
-                            radius="full"
-                        >
-                            Log In
-                        </Button>
-                        <Button
-                            className="mx-2 bg-yellow-custom text-gray-800"
-                            as={Link}
-                            href={route('register')}
-                            color="default"
-                            size="lg"
-                            radius="full"
-                        >
-                            Sign Up
-                        </Button>
-                    </div>
+                    {!auth.user && (
+                        <div className="mt-6">
+                            <Button
+                                className="mx-2 bg-gray-800 text-white"
+                                as={Link}
+                                href={route('login')}
+                                color="default"
+                                size="lg"
+                                radius="full"
+                            >
+                                Log In
+                            </Button>
+                            <Button
+                                className="mx-2 bg-yellow-custom text-gray-800"
+                                as={Link}
+                                href={route('register')}
+                                color="default"
+                                size="lg"
+                                radius="full"
+                            >
+                                Sign Up
+                            </Button>
+                        </div>
+                    )}
                 </header>
 
                 {/* About Section */}
@@ -150,24 +151,26 @@ export default function Home({auth, laravelVersion, phpVersion}) {
                 </section>
 
                 {/* Call to Action Section */}
-                <section className="cta-section bg-yellow-custom py-16 text-center">
-                    <div className="container mx-auto">
-                        <h2 className="text-3xl font-bold">Join Us Now!</h2>
-                        <p className="text-lg my-4">
-                            Sign up to start organizing your notes today.
-                        </p>
-                        <Button
-                            className="mx-2 bg-gray-800 text-white"
-                            as={Link}
-                            href={route('register')}
-                            color="default"
-                            size="lg"
-                            radius="full"
-                        >
-                            Sign Up
-                        </Button>
-                    </div>
-                </section>
+                {!auth.user && (
+                    <section className="cta-section bg-yellow-custom py-16 text-center">
+                        <div className="container mx-auto">
+                            <h2 className="text-3xl font-bold">Join Us Now!</h2>
+                            <p className="text-lg my-4">
+                                Sign up to start organizing your notes today.
+                            </p>
+                            <Button
+                                className="mx-2 bg-gray-800 text-white"
+                                as={Link}
+                                href={route('register')}
+                                color="default"
+                                size="lg"
+                                radius="full"
+                            >
+                                Sign Up
+                            </Button>
+                        </div>
+                    </section>
+                )}
             </div>
         </AuthenticatedLayout>
     );
