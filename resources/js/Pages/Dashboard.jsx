@@ -9,7 +9,7 @@ import {FaPencilAlt} from "react-icons/fa";
 import ModalWrapper from "@/Components/Wrappers/ModalWrapper.jsx";
 import {useDraggable} from "@/Hooks/useDraggable.jsx";
 import FolderForm from "@/Components/Forms/FolderForm.jsx";
-import { useFolder } from "@/Hooks/useFolder"; // Import your custom hook
+import { useFolder } from "@/Hooks/useFolder";
 
 export default function Dashboard({auth, folders}) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -25,7 +25,7 @@ export default function Dashboard({auth, folders}) {
         goToNotes,
         handleDeleteFolder,
         handleUpdateFolder,
-    } = useFolder(folders, onOpen); // Use your custom hook
+    } = useFolder(folders, onOpen);
 
     useEffect(() => {
         const initialOffsets = {};

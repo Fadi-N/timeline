@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react';
-import { usePage } from '@inertiajs/react'; // Hook to get the current URL from Inertia.js
-import loginLogo from '../../../public/img/login-logo.jpg';
-import registrationLogo from '../../../public/img/registration-logo.jpg';
+import { usePage } from '@inertiajs/react';
+import logo from '../../../public/img/auth-logo.jpg';
 
 export default function Guest({ children }) {
-    const { url } = usePage(); // Get the current URL
-    const [image, setImage] = useState(loginLogo);
-
-    useEffect(() => {
-        // Set the image based on the current path
-        if (url.includes('register')) {
-            setImage(registrationLogo);
-        } else {
-            setImage(loginLogo);
-        }
-    }, [url]);
+    const { url } = usePage();
 
     return (
         <div className="h-[100vh] flex">
             {/* Left side: Image */}
             <div className="w-1/2 bg-gray-100 hidden md:inline-block">
                 <img
-                    src={image}
+                    src={logo}
                     alt="Note Management Application"
                     className="object-cover w-full h-full"
                 />
